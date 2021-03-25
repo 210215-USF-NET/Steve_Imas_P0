@@ -12,6 +12,8 @@ namespace Dozen2UI
 {
     class Program
     {
+
+        public static Dozen2Models.Customer currentCustomer;
         static void Main(string[] args)
         {
             var configDB = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
@@ -21,12 +23,17 @@ namespace Dozen2UI
 
             using var context = new DBSteveIP0Context(dbOptions); 
 
-            DrinkMenu dMenu = new DrinkMenu();
+            DrinkMenu dMenu = new DrinkMenu(context);
             dMenu.Start();
         }
     }
 }
+
+
 /*
+ * 
+ * FILL OUT INVENTORY TABLE
+ * 
 //add customer
 //search customer
 //place order

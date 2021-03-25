@@ -6,7 +6,7 @@ namespace Dozen2Models
     {
         private string drinkName; //private backing field for DrinkName
         private int abv; //private backing field for ABV
-        private double price; //private backing field for Price
+        private decimal price; //private backing field for Price
 
         public string DrinkName
         {
@@ -20,11 +20,13 @@ namespace Dozen2Models
             set{abv = value;}
         }
 
-        public double Price
+        public decimal Price
         {
             get{return price;}
             set{price = value;}
         }
+
+        public int DrinkId { get; set; }
 
 
 

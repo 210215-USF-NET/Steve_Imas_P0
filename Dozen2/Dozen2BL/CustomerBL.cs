@@ -18,14 +18,19 @@ namespace DozenBL
         {
             _repo = repo;
         }
-        public void AddCustomer(Customer newCustomer)
+        public Customer AddCustomer(Customer newCustomer)
         {
-            _repo.AddCustomer(newCustomer);
+            return _repo.AddCustomer(newCustomer);
         }
 
         public List<Customer> GetCustomers()
         {
             return _repo.GetCustomers();
         }
-    }
+
+        public List<Customer> GetCustomersByName(string name)
+        {
+            return _repo.GetCustomersByName(name);
+        }
+    }
 }

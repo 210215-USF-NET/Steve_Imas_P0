@@ -2,9 +2,8 @@ namespace Dozen2Models
 {
     public class Customer
     {
-         private string name;
+        private string name;
         private string phoneNumber;
-        private int customerID;
         private string age;
 
 
@@ -31,9 +30,11 @@ namespace Dozen2Models
             set{age = value;}
         }
 
+        public int CustomerId { get; set; }
 
 
-        
+
+
     }
 }
 

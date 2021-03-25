@@ -3,6 +3,7 @@ using Dozen2Models;
 using Dozen2BL;
 using System.Collections.Generic;
 using Dozen2UI;
+using System.Linq;
 
 namespace Dozen2UI
 {
@@ -12,13 +13,15 @@ namespace Dozen2UI
            private ILocationBL _locationBL;
            private IDrinkBL _drinkBL;
            private IOrderBL _orderBL;
-           DrinkMenu drinkMenu = new DrinkMenu();
-           public CustomerMenu(IDrinkBL drinkBL, ICustomerBL customerBL, ILocationBL locationBL, IOrderBL orderBL)
+        private IInventoryBL _inventoryBL;
+          // DrinkMenu drinkMenu = new DrinkMenu();
+           public CustomerMenu(IDrinkBL drinkBL, ICustomerBL customerBL, ILocationBL locationBL, IOrderBL orderBL, InventoryBL inventoryBL)
            {
                _customerBL = customerBL;
               _drinkBL = drinkBL;
               _locationBL = locationBL;
               _orderBL = orderBL;
+            _inventoryBL = inventoryBL;
            }
              
 
@@ -29,12 +32,12 @@ namespace Dozen2UI
             {
                 Console.WriteLine();
                 Console.WriteLine("Welcome to the Main Menu!");
-                Console.WriteLine("What would you like to do?");
-                Console.WriteLine("[0] - Search Existing Customers");
+                Console.WriteLine("Are you a new or an existing customer?");
+                Console.WriteLine("[0] - Existing Customer");
                 Console.WriteLine("[1] - New Customer");
-                Console.WriteLine("[2] - Place an Order (Existing Customers"); 
-                Console.WriteLine("[3] - Select a Store Location");
-                Console.WriteLine("[4] - Back");
+               // Console.WriteLine("[2] - Place an Order (Existing Customers)"); 
+             //   Console.WriteLine("[3] - Select a Store Location");
+                Console.WriteLine("[2] - Back");
                 //Console.WriteLine("[5] - Main Menu");
                 Console.WriteLine("----------------------------------------");
                 string selection = Console.ReadLine();
@@ -47,13 +50,14 @@ namespace Dozen2UI
                     case "1" :
                         CreateCustomer();
                         break;
-                    case "2" :
-                        drinkMenu.Start();
-                        break;
                     case "3" :
-                        GetStores();
+                        BeerMenu beerMenu = new BeerMenu(_inventoryBL, _orderBL);
+                        beerMenu.Start();
                         break;
                     case "4" :
+                        GetStores();
+                        break;
+                    case "2" :
                        
                         run = false;
                         break;
@@ -125,7 +129,9 @@ namespace Dozen2UI
         }
 
         public void CreateCustomer()
-        {
+        {  
+            Console.WriteLine("Cheers! Welcome to the Dozen family!");
+            Console.WriteLine("_____________________________________");
             Customer customer = new Customer();  
             Console.WriteLine("Enter your age");
             customer.Age =Console.ReadLine()  ; 
@@ -138,38 +144,55 @@ namespace Dozen2UI
             }
             else
             {
-                Console.WriteLine("Cheers! Welcome to the Dozen family!");
-                Console.WriteLine("_____________________________________");
+              
                 Console.WriteLine("Enter your full name [FirstName LastName]");
                 customer.Name = Console.ReadLine();
                 Console.WriteLine("Enter your phone number");
                 customer.PhoneNumber = Console.ReadLine();
-
-                _customerBL.AddCustomer(customer);
+                Program.currentCustomer =_customerBL.AddCustomer(customer);
+                Console.WriteLine("Customer successfully added!");
+                var beermenu = new BeerMenu(_inventoryBL, _orderBL);
+                beermenu.Start();
             }
             
         }
 
         public void GetCustomers()
         {
-            Console.WriteLine("Enter an existing customer's name");
+            Console.WriteLine("Enter your full name");
             string name = Console.ReadLine();
-            int counter = 0; //counter checks if customer can be found in db
-                //if no matching name, returns an error message
-
-            foreach (var element in _customerBL.GetCustomers())
+            var customers = _customerBL.GetCustomersByName(name);
+            if (customers.Any()) 
             {
-                if (element.Name.Equals(name) ) 
+                if (customers.Count == 1) 
                 {
-                    Console.WriteLine(element.ToString());
-                    counter++;
+                    Program.currentCustomer = customers.First();
                 }
+
+                else 
+                {
+                    int count = 1;
+                    foreach (var item in customers)
+                    {
+                        Console.WriteLine($"{count} - Name: {item.Name} Age: {item.Age} ");
+                        count++;
+                    }
+                    Console.WriteLine($"Multiple matches found: {customers.Count}, please select the corresponding number to your name");
+
+                    string identity = Console.ReadLine();
+                    int identityNum = int.Parse(identity);
+                    Program.currentCustomer = customers.ToArray()[identityNum - 1];
+
+                }
+                var beermenu = new BeerMenu(_inventoryBL, _orderBL);
+                beermenu.Start();
+               
             }
-                
-            if (counter == 0)
+            else
             {
                 Console.WriteLine("No customer found with those credentials.");
-            } 
+            }
+          
         }
 
 
@@ -199,7 +222,7 @@ namespace Dozen2UI
                     bool shop = true;
                     List <Drink> drinkCart = new List<Drink>();
                     List<int> quantityInCart = new List<int>();
-                    double total = 0.0;
+                    decimal total = 0.0m;
                     do
                     {
                         Console.WriteLine("Select Drink to add to your order");

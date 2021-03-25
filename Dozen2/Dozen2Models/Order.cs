@@ -3,11 +3,16 @@ namespace Dozen2Models
     public class Order
     {
         private int orderID;
-        private double total;
+        private decimal total;
         private Customer customer;
         private Location location;
 
+
         //list of order items aka collection
+
+        public int Quantity { get; set; }
+
+        public string DrinkName { get; set; }
 
         public Customer Customer 
         {
@@ -32,7 +37,7 @@ namespace Dozen2Models
                 location = value;
             }
         }
-        public double Total 
+        public decimal Total 
         {
             get
             {
@@ -43,6 +48,8 @@ namespace Dozen2Models
                 total = value;
             }
         }
+
+        public int DrinkId { get; set; }
 
         public int OrderID 
         {

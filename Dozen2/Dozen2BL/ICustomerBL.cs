@@ -6,6 +6,7 @@ namespace Dozen2BL
     public interface ICustomerBL
     {
          List <Customer> GetCustomers();
-        void AddCustomer(Customer newCustomer);
+        Customer AddCustomer(Customer newCustomer);
+        List<Customer> GetCustomersByName(string name);
     }
 }

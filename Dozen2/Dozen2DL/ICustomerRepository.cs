@@ -7,5 +7,6 @@ namespace Dozen2DL
     {
          List <Customer> GetCustomers();
          Customer AddCustomer (Customer newCustomer);
+        List<Customer> GetCustomersByName(string name);
     }
 }

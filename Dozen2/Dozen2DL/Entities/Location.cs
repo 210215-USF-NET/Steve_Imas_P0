@@ -9,6 +9,7 @@ namespace Dozen2DL.Entities
     {
         public Location()
         {
+            Inventories = new HashSet<Inventory>();
             Orders = new HashSet<Order>();
         }
 
@@ -16,6 +17,7 @@ namespace Dozen2DL.Entities
         public string LocationName { get; set; }
         public string State { get; set; }
 
+        public virtual ICollection<Inventory> Inventories { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }
 }
